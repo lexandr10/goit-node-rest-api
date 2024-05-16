@@ -11,3 +11,6 @@ name: Joi.string(),
 email: Joi.string(),
 phone: Joi.string()
 })
+export const updateContactStatusSchema = Joi.object({
+    favorite: Joi.boolean()
+})

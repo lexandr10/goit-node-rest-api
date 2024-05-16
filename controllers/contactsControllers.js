@@ -1,7 +1,7 @@
 
 import HttpError from "../helpers/HttpError.js";
-import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
-import { addContact, deleteItem, getContacts, getContactsById, updateItem } from "../services/contactsServices.js";
+import { createContactSchema, updateContactSchema, updateContactStatusSchema } from "../schemas/contactsSchemas.js";
+import { addContact, deleteItem, getContacts, getContactsById, updateItem, updateStatusContact } from "../services/contactsServices.js";
 
 
 export const getAllContacts = async (req, res, next) => {
@@ -70,3 +70,21 @@ export const updateContact = async (req, res, next) => {
         next(error);
     }
 };
+
+export const updateFavorite = async (req, res, next) => {
+    try {
+        
+        const {id} = req.params;
+        const {error} =  updateContactStatusSchema.validate(req.body);
+        if(error) {
+            throw HttpError(404, "Type data is not correct, use only boolean")
+        }
+        const statusUpdate = await updateStatusContact(id, req.body);
+        if(!statusUpdate) {
+throw HttpError(404, `Contact with this id=${id} not exist`)
+        }
+        res.status(200).json(statusUpdate);
+    } catch (error) {
+        next(error);
+    }
+}
