@@ -77,7 +77,7 @@ export const updateFavorite = async (req, res, next) => {
         const {id} = req.params;
         const {error} =  updateContactStatusSchema.validate(req.body);
         if(error) {
-            throw HttpError(404, "Type data is not correct, use only boolean")
+            throw HttpError(400, "Type data is not correct, use only boolean")
         }
         const statusUpdate = await updateStatusContact(id, req.body);
         if(!statusUpdate) {

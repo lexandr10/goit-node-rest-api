@@ -12,5 +12,5 @@ email: Joi.string(),
 phone: Joi.string()
 })
 export const updateContactStatusSchema = Joi.object({
-    favorite: Joi.boolean()
+    favorite: Joi.boolean().required()
 })
