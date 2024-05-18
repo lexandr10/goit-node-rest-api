@@ -45,7 +45,7 @@ export const createContact = async (req, res, next) => {
     try {
         const {error} = createContactSchema.validate(req.body);
         if(error) {
-            throw HttpError(404, error.message);
+            throw HttpError(400, error.message);
         }
         const newContact = await addContact(req.body);
         res.status(201).json(newContact);
@@ -59,7 +59,7 @@ export const updateContact = async (req, res, next) => {
         const {id} = req.params;
         const {error} = updateContactSchema.validate(req.body);
         if(error) {
-            throw HttpError(404, error.message);
+            throw HttpError(400, error.message);
         }
         const contactUpdate = await updateItem(id, req.body);
         if(!contactUpdate) {
