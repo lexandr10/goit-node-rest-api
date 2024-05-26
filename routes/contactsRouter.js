@@ -3,10 +3,13 @@ import { createContact, deleteContact, getAllContacts, getOneContact, updateCont
 
 import emptyMiddleware from "../middlewares/isEmptyMiddleware.js";
 import isValidateId from "../middlewares/isValidateId.js";
+import authorization from "../middlewares/authenticate.js";
 
 
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authorization);
 
 contactsRouter.get("/", getAllContacts);
 contactsRouter.get("/:id",isValidateId, getOneContact);
