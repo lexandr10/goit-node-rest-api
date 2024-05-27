@@ -14,8 +14,11 @@ const checkEmail = await findUser({email});
 const newUser = await saveUser(req.body);
 
 res.status(201).json({
-    email: newUser.email,
-    subscription: newUser.subscription
+    user: {
+        email: newUser.email,
+        subscription: newUser.subscription
+    }
+   
 })
 
 
@@ -51,7 +54,10 @@ const signout = async (req, res) => {
     }
     await updateUser({_id}, {token: ""})
     res.status(204).json({
-        message: "Signout success"
+        user: {
+            email: user.email,
+            subscription: user.subscription
+        }
     })
 }
 

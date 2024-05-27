@@ -8,7 +8,11 @@ export const getContacts =  (search = {}) => {
     return Contact.find(filter, fields, settings);
 };
 
-export const getContactsById = (_id) => Contact.findById(_id);
+export const getContactsById = (search = {}) => 
+    {
+        const {filter} = search;
+        return Contact.findOne(filter);
+    }
 
 export const deleteItem = (id) => Contact.findByIdAndDelete(id);
 
