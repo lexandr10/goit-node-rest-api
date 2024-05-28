@@ -9,7 +9,7 @@ const app = express();
 
 
 const {DB_HOST} = process.env;
-
+const port = process.env.PORT || 4000;
 
 app.use(morgan("tiny"));
 app.use(cors());
@@ -32,7 +32,7 @@ res.status(status).json({message});
 
 mongoose.connect(DB_HOST)
 .then(() => {
-  app.listen(4000, () => {
+  app.listen(port, () => {
     console.log('Database connection successful');
   })
 }).catch((err) => {
