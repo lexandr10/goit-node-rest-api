@@ -48,7 +48,12 @@ export const getOneContact = async(req, res, next) => {
 export const deleteContact = async (req, res, next) => {
     try {
         const {id} = req.params;
-        const contact = await deleteItem(id);
+        const {_id: owner} = req.user;
+        const filter = {
+            _id: id,
+            owner
+        }
+        const contact = await deleteItem(filter);
         if(!contact) {
            throw HttpError(404, `Contact with this id=${id} Not found`);
         }
@@ -75,11 +80,16 @@ export const createContact = async (req, res, next) => {
 export const updateContact = async (req, res, next) => {
     try {
         const {id} = req.params;
+        const {_id: owner} = req.user;
+        const filter = {
+            _id: id,
+            owner
+        }
         const {error} = updateContactSchema.validate(req.body);
         if(error) {
             throw HttpError(400, error.message);
         }
-        const contactUpdate = await updateItem(id, req.body);
+        const contactUpdate = await updateItem(filter, req.body);
         if(!contactUpdate) {
         throw HttpError(404, `Contact with this id=${id} not exist`)
         }
@@ -93,11 +103,16 @@ export const updateFavorite = async (req, res, next) => {
     try {
         
         const {id} = req.params;
+        const {_id: owner} = req.user;
+        const filter = {
+            _id: id,
+            owner
+        }
         const {error} =  updateContactStatusSchema.validate(req.body);
         if(error) {
             throw HttpError(400, "Type data is not correct, use only boolean")
         }
-        const statusUpdate = await updateStatusContact(id, req.body);
+        const statusUpdate = await updateStatusContact(filter, req.body);
         if(!statusUpdate) {
 throw HttpError(404, `Contact with this id=${id} not exist`)
         }

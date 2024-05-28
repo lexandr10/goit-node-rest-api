@@ -14,10 +14,10 @@ export const getContactsById = (search = {}) =>
         return Contact.findOne(filter);
     }
 
-export const deleteItem = (id) => Contact.findByIdAndDelete(id);
+export const deleteItem = (filter) => Contact.findOneAndDelete(filter);
 
 export const addContact = data => Contact.create(data);
 
-export const updateItem =  (id, data) => Contact.findByIdAndUpdate(id, data);
+export const updateItem =  (filter, data) => Contact.findOneAndUpdate(filter, data);
 
-export const updateStatusContact = (id, data) => Contact.findByIdAndUpdate(id, data);
+export const updateStatusContact = (filter, data) => Contact.findOneAndUpdate(filter, data);

@@ -43,7 +43,13 @@ export const signin = async(req, res) => {
     const token = createToken(payload);
 
     await updateUser({_id: id}, {token})
-    res.json({token});
+    res.json({
+        user: {
+            token,
+            email: checkEmail.email,
+            subscription: checkEmail.subscription
+        }
+    });
 }
 
 const signout = async (req, res) => {
