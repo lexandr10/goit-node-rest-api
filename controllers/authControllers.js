@@ -3,15 +3,21 @@ import HttpError from "../helpers/HttpError.js";
 import compareHash from "../helpers/compareHash.js";
 import { createToken } from "../helpers/jwt.js";
 import { findUser, saveUser, updateUser } from "../services/authServices.js";
+import gravatar from "gravatar"
+import path from "path";
+import fs from "fs/promises";
+import Jimp from "jimp";
+
+const avatarsPath = path.resolve("public", "avatars");
 
 export const signup = async (req, res) => {
 const {email} = req.body;
-
+const avatar = gravatar.url(email, {s: "250"});
 const checkEmail = await findUser({email});
  if(checkEmail) {
     throw HttpError(409, "Email already use")
  }
-const newUser = await saveUser(req.body);
+const newUser = await saveUser({...req.body, avatarURL: avatar});
 
 res.status(201).json({
     user: {
@@ -44,8 +50,8 @@ export const signin = async(req, res) => {
 
     await updateUser({_id: id}, {token})
     res.json({
+        token,
         user: {
-            token,
             email: checkEmail.email,
             subscription: checkEmail.subscription
         }
@@ -93,10 +99,34 @@ const updateSubscription = await updateUser({_id: user.id}, {subscription});
     });
 }
 
+export const changeAvatar = async (req, res) => {
+const {path: oldPath, filename} = req.file;
+const newPath = path.join(avatarsPath, filename);
+await fs.rename(oldPath, newPath);
+const avatar = path.join("avatars", filename);
+const changeSize = Jimp.read(newPath, (err, av) => {
+if(err) throw HttpError(401, err);
+av.resize(250, 250).write(newPath);
+})
+const user = req.user;
+if(!user) {
+    throw HttpError(401, "Not authorized")
+}
+const updateAvatar = await updateUser({_id: user.id}, {avatarURL: avatar});
+
+res.json({
+    message: "Success update Avatar",
+    avatarURL:avatar
+})
+
+
+}
+
 export default {
     signup: ctrlWrapper(signup),
     signin: ctrlWrapper(signin),
     signout: ctrlWrapper(signout),
     getCurrent: ctrlWrapper(getCurrent),
-    updateSub: ctrlWrapper(updateSub)
+    updateSub: ctrlWrapper(updateSub),
+    changeAvatar: ctrlWrapper(changeAvatar)
 }

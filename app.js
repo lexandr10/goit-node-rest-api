@@ -8,12 +8,12 @@ import authRouter from "./routes/authRouter.js";
 const app = express();
 
 
-const {DB_HOST} = process.env;
-const port = process.env.PORT || 4000;
+
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use("/api/users", authRouter);
 app.use("/api/contacts", contactsRouter);
@@ -29,14 +29,4 @@ res.status(status).json({message});
 
 
 
-
-mongoose.connect(DB_HOST)
-.then(() => {
-  app.listen(port, () => {
-    console.log('Database connection successful');
-  })
-}).catch((err) => {
-  
-  console.log(err.message);
-  process.exit(1);
-})
+export default app;

@@ -24,6 +24,7 @@ const authSchema = new Schema({
           type: String,
           default: null,
         },
+        avatarURL: String
       
 }, {versionKey: false, timestamps: true})
 
