@@ -3,6 +3,7 @@ import { emailRegexp } from "../constants/userCostants.js";
 import { handlerSaveError, setUpSetting } from "./hooks.js";
 
 
+
 const authSchema = new Schema({
     
         password: {
@@ -24,7 +25,14 @@ const authSchema = new Schema({
           type: String,
           default: null,
         },
-        avatarURL: String
+        avatarURL: String,
+        verify: {
+          type: Boolean,
+          default: false
+        },
+        vericationCode: {
+          type: String
+        }
       
 }, {versionKey: false, timestamps: true})
 

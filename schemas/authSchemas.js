@@ -13,3 +13,7 @@ export const signinSchema = Joi.object({
     password: Joi.string().required(),
     email: Joi.string().required().pattern(emailRegexp)
 })
+
+export const emailSchema = Joi.object({
+    email: Joi.string().required().pattern(emailRegexp)
+})

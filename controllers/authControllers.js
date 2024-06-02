@@ -7,6 +7,8 @@ import gravatar from "gravatar"
 import path from "path";
 import fs from "fs/promises";
 import Jimp from "jimp";
+import { nanoid } from "nanoid";
+import sendEmail from "../helpers/sendEmail.js";
 
 const avatarsPath = path.resolve("public", "avatars");
 
@@ -17,7 +19,17 @@ const checkEmail = await findUser({email});
  if(checkEmail) {
     throw HttpError(409, "Email already use")
  }
-const newUser = await saveUser({...req.body, avatarURL: avatar});
+ const vericationCode = nanoid();
+const newUser = await saveUser({...req.body, avatarURL: avatar, vericationCode});
+
+const verifyEmail = {
+    to: email,
+    subject: "Verify Email",
+    html: `<a target="_blank" href="http://localhost:4000/api/users/verify/${vericationCode}">Click verify email</a>`
+
+}
+
+await sendEmail(verifyEmail);
 
 res.status(201).json({
     user: {
@@ -27,6 +39,43 @@ res.status(201).json({
    
 })
 
+
+}
+
+const verify = async(req, res) => {
+const {vericationCode} = req.params;
+const user = await findUser({vericationCode});
+if(!user) {
+    throw HttpError(404, "User not found")
+}
+await updateUser({_id: user._id}, {verify: true, vericationCode: null});
+
+res.json({
+    message: "'Verification successful'"
+})
+
+}
+
+const resendVerify = async(req, res) => {
+const {email} = req.body;
+const user = await findUser({email});
+if(!user) {
+    throw HttpError(401, "User not found")
+}
+if(user.verify) {
+    throw HttpError(400, "Verification has already been passed")
+}
+const verifyEmail = {
+    to: email,
+    subject: "Verify Email",
+    html: `<a target="_blank" href="http://localhost:4000/api/users/verify/${user.vericationCode}">Click verify email</a>`
+
+}
+
+await sendEmail(verifyEmail);
+res.json({
+    message: "Email resend"
+})
 
 }
 
@@ -40,6 +89,9 @@ export const signin = async(req, res) => {
     const comparePassword = await compareHash(password, checkEmail.password);
     if(!comparePassword) {
         throw HttpError(401, "Email or password invalid")
+    }
+    if(!checkEmail.verify) {
+        throw HttpError(400, "Email not verify");
     }
     const {_id: id} = checkEmail;
     const payload = {
@@ -128,5 +180,7 @@ export default {
     signout: ctrlWrapper(signout),
     getCurrent: ctrlWrapper(getCurrent),
     updateSub: ctrlWrapper(updateSub),
-    changeAvatar: ctrlWrapper(changeAvatar)
+    changeAvatar: ctrlWrapper(changeAvatar),
+    verify: ctrlWrapper(verify),
+    resendVerify: ctrlWrapper(resendVerify)
 }
