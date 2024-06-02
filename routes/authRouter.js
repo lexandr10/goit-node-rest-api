@@ -5,6 +5,9 @@ import { signinSchema, signupSchema } from "../schemas/authSchemas.js";
 import authControllers from "../controllers/authControllers.js";
 import authorization from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js"
+import EmptyFileMidd from "../middlewares/EmptyFileMidd.js";
+
+
 
 const authRouter = express.Router();
 
@@ -18,6 +21,6 @@ authRouter.get("/current", authorization, authControllers.getCurrent);
 
 authRouter.patch("/", authorization, authControllers.updateSub);
 
-authRouter.patch("/avatars", authorization, upload.single("avatars"), authControllers.changeAvatar)
+authRouter.patch("/avatars", authorization, upload.single("avatars"), EmptyFileMidd, authControllers.changeAvatar)
 
 export default authRouter;

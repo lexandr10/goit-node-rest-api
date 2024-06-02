@@ -23,6 +23,7 @@ const fileFilter = (req, file, callback) => {
     if(extetion === "exe") {
         return callback(HttpError(400, ".exe extetion not allow"))
     }
+    
     callback(null, true);
 }
 
