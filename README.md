@@ -1,10 +1,11 @@
 # goit-node-rest-api
-Features
-- [Features](#features)
-- [Technologies and Libraries](#technologies-and-libraries)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+
+## Features
+
+- **User Authentication**: Registration, login, and user profile management.
+- **Recipe Management**: Create, update, delete, and view recipes.
+- **Favorites**: Add recipes to favorites.
+- **Follow Users**: Follow and unfollow other users.
+- **Filter and Search**: Filter recipes by categories, areas, and ingredients.
+- **Testimonials**: Get user testimonials.
+
